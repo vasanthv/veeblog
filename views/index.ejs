@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<%- include('partials/html-head', {title: ""}); -%>
+
+<body>
+  <div id="app" class="wrap">
+    <%- include('partials/header', {title: "Veeblog"}); -%>
+
+    <section>
+      <h3>A minimal & free microblogging platform with markdown support.</h3>
+      <p>Share what's on your mind without the noise of social media. Veeblog brings the freedom of traditional blogging to microblogging - a clean space to write, share, and connect on your terms. No follows, no likes, just your thoughts.</p>
+
+      <h3>Features</h3>
+      <ul>
+        <li><strong>No Follows or Likes:</strong> Focus on writing, not social validation.</li>
+        <li><strong>Free Subdomain:</strong> Get <code>username.veeblog.com</code> instantly.</li>
+        <li><strong>Custom Domain:</strong> One-time $36 payment to use your own domain.</li>
+        <li><strong>No Ads:</strong> We will never display ads on your blogs, ever.</li>
+        <li><strong>Markdown Support:</strong> Format your posts, embed external images & videos.</li>
+        <li><strong>RSS Feeds for Your Blog:</strong> Let others follow your updates easily.</li>
+        <li><strong>Minimal RSS Reader:</strong> Follow your favorite blogs or news without distractions.</li>
+        <li><strong>You Own Your Content:</strong> Download all your posts anytime you want.</li>
+        <li><strong>Write Freely:</strong> Doesn't have to be microblog - write essays, short thoughts, or anything in between.</li>
+      </ul>
+
+      <p>Just a calm corner of the internet where you can write and share on your own terms.</p>
+
+      <a href="/signup"><button>get started</button></a>
+    </section>
+    <div class="spacer"></div>
+    <section>
+      <p>Curious how it looks? View a sample profile: <a href="https://vasanth.veeblog.com">vasanth.veeblog.com</a></p>
+    </section>
+
+    <div class="spacer"></div>
+    <%- include('partials/footer'); -%>
+  </div>
+</body>
+
+</html>

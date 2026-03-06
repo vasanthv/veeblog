@@ -1,0 +1,33 @@
+<!doctype html>
+
+<html lang="en">
+<%- include('partials/html-head', {title: "Configure your feed"}); -%>
+
+<body>
+  <div id="app" class="wrap">
+    <%- include('partials/header',{title: "Configure your feed"}); -%>
+
+    <section>
+      <p>We provide a simple RSS reader for keeping up with your favorite blogs and news websites. If you follow more than 50 feeds, we recommend using a dedicated RSS reader for a better experience.</p>
+
+      <div class="field">
+        <label for="feedurls">Enter one RSS feed URL on each line.</label>
+        <textarea id="feedurls" placeholder="Eg:&#10;https://vasanth.veeblog.com/feed&#10;https://techcrunch.com/feed" v-model="feedUrls" rows="2"></textarea>
+      </div>
+
+      <button v-on:click="updateFeeds">update</button>
+
+    </section>
+
+    <div class="spacer"></div>
+    <%- include('partials/footer'); -%>
+  </div>
+
+  <script type="text/javascript">
+    window.onload = () => {
+      App.feedUrls = "<%- JSON.stringify(user.feedFollows.join('\n')).slice(1, -1) %>"
+    }
+  </script>
+</body>
+
+</html>

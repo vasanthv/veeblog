@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<%- include('partials/html-head', {title: `${post.user.name ?? post.user.username} / ${title}`}); -%>
+
+<body>
+  <div id="app" class="wrap">
+    <%- include('partials/profile-header', {title: post.user.name ?? post.user.username}); -%>
+
+    <section>
+      <div class="post">
+        <div class="content"><%- post.html %></div>
+        <div class="spacer"></div>
+        <div class="small light">
+          Posted on
+          <time title="<%= post.createdOn %>">
+            <%= post.createdOn.toString() %>
+          </time>
+        </div>
+      </div>
+    </section>
+    <%- include('partials/profile-footer'); -%>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<%- include('partials/html-head', {title: "Feed"}); -%>
+
+<body>
+  <div id="app" class="wrap" v-cloak>
+    <%- include('partials/header', {title: "Feed"}); -%>
+    <% if(user.feedFollows.length <= 0) { %>
+    <div class="empty">No items to show.</div>
+    <% } else { %>
+    <section>
+      <details class="error" v-if="feedErrorHTML" v-html="feedErrorHTML"></details>
+      <div class="post" v-for="(item, i) in feedItems" v-bind:key="item._id">
+        <div><a :href="item.link" class="feed-link" target="_blank" rel="noopener">{{item.title}}</a></div>
+        <div class="meta small">
+          <a :href="item.channel.link" v-if="item.channel.link" target="_blank" rel="noopener">{{item.channel.title ?? item.channel.link}}</a>
+          <span v-if="item.channel.link">&nbsp;&middot;&nbsp;</span>
+          <time class="light" v-if="item.publishedOn">{{timeAgo(item.publishedOn)}}</time>
+        </div>
+      </div>
+      <div class="loader" v-if="isLoading">loading...</div>
+      <div class="spacer"></div>
+      <section class="center">
+        <a href="javascript:void(0)" v-if="showLoadMore && !isLoading" @click="getFeedItems">Load more &darr;</a>
+      </section>
+    </section>
+    <% }  %>
+
+    <%- include('partials/footer'); -%>
+  </div>
+
+  <script type="text/javascript">
+    window.onload = () => App.getFeedItems()
+  </script>
+
+</body>
+
+</html>

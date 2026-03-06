@@ -1,0 +1,126 @@
+<!doctype html>
+
+<html lang="en">
+<%- include('partials/html-head', {title: "Account settings"}); -%>
+
+<body>
+  <div id="app" class="wrap">
+    <%- include('partials/header',{title: "Account settings"}); -%>
+
+    <section>
+      <fieldset>
+        <legend>Required fields</legend>
+        <div class="field">
+          <label for="username">Username</label>
+          <input type="text" id="username" placeholder="enter your username" v-model="myAccount.username" />
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="text" id="email" placeholder="enter your email" v-model="myAccount.email" />
+          <% if(typeof user.emailVerificationCode !== "undefined") { %>
+          <a href="javascript:void(0)" v-on:click="resendVerification">resend verification</a>
+          <% } %>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Optional fields</legend>
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" placeholder="enter your name" v-model="myAccount.name" />
+        </div>
+        <div class="field">
+          <label for="icon">Favicon URL</label>
+          <input type="text" id="icon" placeholder="enter an icon URL" v-model="myAccount.iconUrl" />
+          <div class="help">Eg: https://example.com/favicon.png</div>
+        </div>
+        <div class="field">
+          <label for="bio">Bio</label>
+          <textarea id="bio" placeholder="enter your bio" v-model="myAccount.bio" rows="2"></textarea>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="new password" v-model="myAccount.password" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Premium fields <strong>($36 one-time)</strong></legend>
+        <div class="field">
+          <label for="domain">Custom domain</label>
+          <input type="text" id="domain" placeholder="enter a custom domain" v-model="myAccount.domain" :disabled="myAccount.isFreeUser" />
+          <div class="help">Eg: example.com or subdomain.example.com</div>
+        </div>
+        <div class="field">
+          <label for="cssUrl">Custom CSS URL</label>
+          <input type="text" id="cssUrl" placeholder="enter a CSS URL" v-model="myAccount.customCssUrl" :disabled="myAccount.isFreeUser" />
+          <div class="help">Eg: https://example.com/style.css</div>
+        </div>
+        <div class="field">
+          <label for="scriptUrl">Custom Script URL</label>
+          <input type="text" id="scriptUrl" placeholder="enter a script URL" v-model="myAccount.customScriptUrl" :disabled="myAccount.isFreeUser" />
+          <div class="help">Eg: https://example.com/script.js</div>
+        </div>
+      </fieldset>
+
+
+      <button v-on:click="updateAccount">update</button>
+    </section>
+
+    <div class="spacer"></div>
+    <hr />
+    <div class="spacer"></div>
+    <div class="spacer"></div>
+    <a href="logout" class="red bold">Log out of your account</a>
+    <div class="spacer"></div>
+    <div class="spacer"></div>
+
+
+    <details>
+      <summary>Get premium</summary>
+      <p>Get access to all Veeblog Premium features with a one-time payment of <strong>$36</strong>. After your payment is confirmed, please allow up to <strong>24 hours</strong> for the changes to take effect.</p>
+      <a href="https://buy.stripe.com/3cI7sNejnf3WaiF9RkbbG00" target="_blank"><button class="ghost">Buy now for $36</button></a>
+    </details>
+
+    <div class="spacer"></div>
+
+
+    <details>
+      <summary>Account deletion</summary>
+      <p>Deleting your account will permanently remove all your data and messages after 7 days. If you change your mind, just log back in within those 7 days to cancel the deletion.</p>
+
+      <p><a href="/export" target="_blank">Download your data</a>, before proceeding further.</p>
+
+      <div v-if="!deleteConfirm">
+        <button class="red" v-on:click="deleteConfirm = true">delete account</button>
+      </div>
+
+      <div v-if="deleteConfirm">
+        <p class="bold">Are you sure?</p>
+        <button class="red" v-on:click="deleteAccount">confirm & delete</button>
+      </div>
+    </details>
+
+    <div class="spacer"></div>
+    <%- include('partials/footer'); -%>
+
+  </div>
+
+  <script type="text/javascript">
+    window.onload = () => {
+      App.myAccount = {
+        username: "<%=user.username%>",
+        email: "<%=user.email%>",
+        name: "<%=user.name%>",
+        isFreeUser: "<%=user.usertype%>" === 'free',
+        bio: "<%- JSON.stringify(user.bio || '').slice(1, -1) %>",
+        password: "",
+        iconUrl: "<%=user.iconUrl%>",
+        domain: "<%=user.domain%>",
+        customCssUrl: "<%=user.customCssUrl%>",
+        customScriptUrl: "<%=user.customScriptUrl%>",
+      };
+    }
+  </script>
+</body>
+
+</html>
