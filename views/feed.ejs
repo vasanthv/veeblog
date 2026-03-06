@@ -6,7 +6,11 @@
   <div id="app" class="wrap" v-cloak>
     <%- include('partials/header', {title: "Feed"}); -%>
     <% if(user.feedFollows.length <= 0) { %>
-    <div class="empty">No items to show.</div>
+    <div class="empty">
+      No items to show.
+      <div class="spacer"></div>
+      <a href="/feed/config">configure your feed</a>
+    </div>
     <% } else { %>
     <section>
       <details class="error" v-if="feedErrorHTML" v-html="feedErrorHTML"></details>
@@ -29,9 +33,11 @@
     <%- include('partials/footer'); -%>
   </div>
 
+  <% if(user.feedFollows.length > 0) { %>
   <script type="text/javascript">
     window.onload = () => App.getFeedItems()
   </script>
+  <% }  %>
 
 </body>
 
