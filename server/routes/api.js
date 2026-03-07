@@ -9,7 +9,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 
 router.get("/verify/:code", apiHandler.verifyEmail);
 
-router.post("/signup", rateLimit({ windowMs: 30, max: 2, skipFailedRequests: true }), apiHandler.signUp);
+router.post("/signup", rateLimit({ windowMs: 60, max: 2, skipFailedRequests: true }), apiHandler.signUp);
 router.post("/login", rateLimit({ max: 5 }), apiHandler.logIn);
 router.post("/reset", rateLimit({ max: 5 }), apiHandler.resetPassword);
 router.post("/resend", rateLimit({ max: 1 }), apiHandler.resendEmailVerification);
@@ -22,7 +22,7 @@ router.get("/feed", apiHandler.getFeed);
 router.post("/logout", apiHandler.logOut);
 router.delete("/account", apiHandler.deleteAccount);
 
-router.post("/posts", apiHandler.createPost);
+router.post("/posts", rateLimit({ max: 5 }), apiHandler.createPost);
 router.put("/posts/:id", apiHandler.updatePost);
 router.delete("/posts/:id", apiHandler.deletePost);
 

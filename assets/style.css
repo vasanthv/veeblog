@@ -274,7 +274,7 @@ summary {
 @media (prefers-color-scheme: dark) {
 	:root {
 		--background: #121212;
-		--text: #f5f5f5;
+		--text: #cdcdcd;
 		--grey: #3a3a3a;
 		--blue: #3b82f6;
 		--red: #e74c3c;

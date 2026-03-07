@@ -146,7 +146,7 @@ const rateLimit = (options) => {
 	return rateLimiter({
 		max: 50,
 		...options,
-		windowMs: (options?.windowMs || 5) * 60 * 1000, // in minutes
+		windowMs: (options?.windowMs || 15) * 60 * 1000, // in minutes
 		// Use a combination of factors for rate limiting
 		keyGenerator: (req) => {
 			// If user is authenticated, use their session token
@@ -158,7 +158,7 @@ const rateLimit = (options) => {
 		},
 		handler: (req, res) =>
 			res.status(429).json({
-				message: `Too many requests. Try again after ${options?.windowMs || 5} mins`,
+				message: `Too many requests. Try again after ${options?.windowMs || 15} mins`,
 			}),
 	});
 };
