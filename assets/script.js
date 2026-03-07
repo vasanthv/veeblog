@@ -86,8 +86,8 @@ const App = Vue.createApp({
 			if (!this.post.text.trim()) return this.setToast("Text cannot be empty");
 			const text = this.post.text.trim();
 			axios.post("/api/posts", { text }).then((response) => {
-				this.post.text = "";
 				window.localStorage.removeItem("newPost");
+				this.setToast(response.data.message, "success");
 				redirect("/");
 			});
 		},
