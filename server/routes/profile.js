@@ -5,7 +5,14 @@ const Feed = require("feed").Feed;
 const router = require("express").Router();
 
 const { Posts } = require("../model").getInstance();
-const { getPagedPosts, getUserBaseUrl, getUserByUsername, getValidUsername, getTitle } = require("../utils");
+const {
+	getPagedPosts,
+	getUserBaseUrl,
+	getUserByUsername,
+	getValidUsername,
+	getTitle,
+	formatPostDate,
+} = require("../utils");
 const config = require("../../config");
 
 dayjs.extend(relativeTime);
@@ -62,11 +69,10 @@ router.get("/post/:id", async (req, res, next) => {
 
 		let postDate = post.createdOn.toString();
 
-		// get user timezone from ip address from cloudfront
 		if (req.userIp) {
 			const geo = geoip.lookup(req.userIp);
 			if (geo?.timezone) {
-				postDate = post.createdOn.toLocaleString("en-US", { timeZone: geo.timezone });
+				postDate = formatPostDate(post.createdOn, geo.timezone);
 			}
 		}
 

@@ -201,6 +201,30 @@ const getUserBaseUrl = (user) => {
 };
 
 /**
+ * Formats a date as: "wed aug 12 2012 02:09PM".
+ * Uses the supplied IANA timezone if provided.
+ * @param {Date|string|number} dateValue - Date value to format
+ * @param {string} timezone - Optional IANA timezone (e.g., "America/Toronto")
+ * @returns {string} Formatted date string
+ */
+const formatPostDate = (dateValue, timezone) => {
+	const formatOptions = {
+		weekday: "short",
+		month: "short",
+		day: "2-digit",
+		year: "numeric",
+		hour: "2-digit",
+		minute: "2-digit",
+		hour12: true,
+	};
+	if (timezone) formatOptions.timeZone = timezone;
+
+	const parts = new Intl.DateTimeFormat("en-US", formatOptions).formatToParts(dateValue);
+	const get = (type) => parts.find((part) => part.type === type)?.value || "";
+	return `${get("weekday")} ${get("month")} ${get("day")} ${get("year")} ${get("hour")}:${get("minute")}${get("dayPeriod").toUpperCase()}`;
+};
+
+/**
  * Creates an error object with HTTP status code and message.
  * @param {number} code - HTTP error code
  * @param {string} message - HTTP error message
@@ -230,5 +254,6 @@ module.exports = {
 	markdownToHtml,
 	getTitle,
 	getUserBaseUrl,
+	formatPostDate,
 	httpError,
 };
