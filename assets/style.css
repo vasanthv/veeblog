@@ -185,7 +185,6 @@ summary {
 }
 .error {
 	color: var(--red);
-	font-style: italic;
 	font-weight: bold;
 }
 .page-title {
@@ -253,7 +252,6 @@ summary {
 	text-align: center;
 	box-sizing: border-box;
 	margin: auto;
-	font-size: 1em;
 	position: sticky;
 	top: 1rem;
 	padding: 0.5rem;
