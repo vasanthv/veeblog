@@ -74,14 +74,12 @@
     <div class="spacer"></div>
     <div class="spacer"></div>
 
-
-    <details>
+    <details v-if="myAccount.isFreeUser">
       <summary>Get premium</summary>
       <p>Get access to all Veeblog Premium features with a one-time payment of <strong>$36</strong>. After your payment is confirmed, please allow up to <strong>24 hours</strong> for the changes to take effect.</p>
       <a href="https://buy.stripe.com/3cI7sNejnf3WaiF9RkbbG00" target="_blank"><button class="ghost">Buy now for $36</button></a>
     </details>
-
-    <div class="spacer"></div>
+    <div class="spacer" v-if="myAccount.isFreeUser"></div>
 
 
     <details>
