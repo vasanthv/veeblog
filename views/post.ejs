@@ -9,7 +9,7 @@
 
     <section id="postbox">
       <form @submit.prevent="<%- typeof post !== "undefined" ? `updatePost('${post._id}')` : "createPost" %>">
-        <textarea v-model="post.text" placeholder="start writing.."></textarea>
+        <textarea v-model="post.text" placeholder="start writing.." <% if(typeof post === "undefined") { %>@keyup="onPostChange" <% } %>></textarea>
         <div class="spacer"></div>
         <div class="flex">
           <div class="flex-1">
@@ -28,6 +28,14 @@
     window.onload = () => {
       App.post = {
         text: "<%- JSON.stringify(post.text).slice(1, -1) %>"
+      }
+    }
+  </script>
+  <% }else { %>
+  <script type="text/javascript">
+    window.onload = () => {
+      App.post = {
+        text: window.localStorage.newPost ?? ""
       }
     }
   </script>

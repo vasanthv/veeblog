@@ -79,12 +79,15 @@ const App = Vue.createApp({
 				});
 			}
 		},
+		onPostChange() {
+			window.localStorage.setItem("newPost", this.post.text);
+		},
 		createPost() {
 			if (!this.post.text.trim()) return this.setToast("Text cannot be empty");
 			const text = this.post.text.trim();
 			axios.post("/api/posts", { text }).then((response) => {
 				this.post.text = "";
-				this.setToast(response.data.message, "success");
+				window.localStorage.removeItem("newPost");
 				redirect("/");
 			});
 		},
