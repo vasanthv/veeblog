@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
+const useragent = require("express-useragent");
 
 const pkg = require("./package.json");
 
@@ -15,6 +16,7 @@ const {
 	csrfMiddleware,
 	attachUsertoRequest,
 	attachUserDomainToRequest,
+	logAnalyticEvent,
 } = require("./server/middlewares");
 
 const app = express();
@@ -32,6 +34,8 @@ app.use(express.static(path.join(__dirname, "assets/icons")));
 
 // HTTP access logs
 app.use(morgan("dev")); // for dev logging
+app.use(useragent.express());
+app.use(logAnalyticEvent);
 
 app.use(attachUserDomainToRequest);
 app.use((req, res, next) => {

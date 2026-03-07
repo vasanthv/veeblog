@@ -15,6 +15,8 @@ module.exports = {
 	SECRET: process.env.SECRET ?? "some-secret",
 	AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY_ID,
 	AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
+	BETTERSTACK_HOST: process.env.BETTERSTACK_HOST,
+	BETTERSTACK_TOKEN: process.env.BETTERSTACK_TOKEN,
 	NO_REPLY_EMAIL: process.env.NO_REPLY_EMAIL ?? "Veeblog <noreply@email.veeblog.com>",
 	INVALID_HANDLES: ["administrator", "admin", "bot", "veeblog", "hello", "hey", "hi", "demo", "test", "status"],
 	TITLE_MAX_LENGTH: 320,

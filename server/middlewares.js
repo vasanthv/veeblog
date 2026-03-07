@@ -1,6 +1,8 @@
 const rateLimiter = require("express-rate-limit");
 const mongoStore = require("connect-mongo");
 const session = require("express-session");
+const axios = require("axios");
+const { isbot } = require("isbot");
 const uuid = require("uuid").v4;
 
 const config = require("../config");
@@ -163,6 +165,55 @@ const rateLimit = (options) => {
 	});
 };
 
+const postBetterStackEvent = (payload) => {
+	const token = (config.BETTERSTACK_TOKEN || "").trim();
+	const host = (config.BETTERSTACK_HOST || "").trim();
+	if (!host || !token) return;
+
+	void axios
+		.post(`https://${host}`, payload, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+				"Content-Type": "application/json",
+			},
+			timeout: 1500,
+		})
+		.catch(() => {});
+};
+
+const logAnalyticEvent = (req, res, next) => {
+	const startedAt = Date.now();
+	const userAgent = req.get("user-agent") || "";
+	const userAgentInfo = req.useragent || {};
+	const cfClientBot = (req.get("cf-client-bot") || "").toLowerCase();
+	const isBot = cfClientBot === "true" || userAgentInfo.isBot || isbot(userAgent);
+	res.once("finish", () => {
+		const event = {
+			event: "http_request",
+			timestamp: new Date().toISOString(),
+			method: req.method,
+			path: req.originalUrl,
+			statusCode: res.statusCode,
+			durationMs: Date.now() - startedAt,
+			domain: (req.get("x-forwarded-host") || req.get("host") || req.hostname || "").toLowerCase(),
+			referrer: req.get("referer") || req.get("referrer") || null,
+			userAgent,
+			browser: userAgentInfo.browser || "unknown",
+			os: userAgentInfo.os || "unknown",
+			isBot,
+			countryCode: req.get("cf-ipcountry") || null,
+			city: req.get("cf-ipcity") || null,
+			continent: req.get("cf-ipcontinent") || null,
+			ip: (req.get("cf-connecting-ip") || req.ip || "").split(",")[0].trim(),
+			rayId: req.get("cf-ray") || null,
+		};
+
+		postBetterStackEvent({ dt: event.timestamp, ...event });
+	});
+
+	next();
+};
+
 module.exports = {
 	sessionMiddleWare,
 	attachUsertoRequest,
@@ -170,4 +221,5 @@ module.exports = {
 	isUserAuthed,
 	csrfMiddleware,
 	rateLimit,
+	logAnalyticEvent,
 };
