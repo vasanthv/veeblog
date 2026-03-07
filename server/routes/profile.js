@@ -1,3 +1,4 @@
+const geoip = require("geoip-lite");
 const dayjs = require("dayjs");
 const relativeTime = require("dayjs/plugin/relativeTime");
 const Feed = require("feed").Feed;
@@ -59,11 +60,22 @@ router.get("/post/:id", async (req, res, next) => {
 
 		if (post?.user?.username !== handle) return res.status(404).render("404");
 
+		let postDate = post.createdOn.toString();
+
+		// get user timezone from ip address from cloudfront
+		if (req.userIp) {
+			const geo = geoip.lookup(req.userIp);
+			if (geo?.timezone) {
+				postDate = post.createdOn.toLocaleString("en-US", { timeZone: geo.timezone });
+			}
+		}
+
 		res.render("single", {
 			profile: post.user,
 			post,
 			csrfToken: req.csrfToken,
 			title: getTitle(post.text),
+			postDate,
 		});
 	} catch (error) {
 		next(error);

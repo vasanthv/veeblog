@@ -187,6 +187,7 @@ const logAnalyticEvent = (req, res, next) => {
 	const userAgentInfo = req.useragent || {};
 	const cfClientBot = (req.get("cf-client-bot") || "").toLowerCase();
 	const isBot = cfClientBot === "true" || userAgentInfo.isBot || isbot(userAgent);
+	const ip = (req.get("cf-connecting-ip") || req.ip || "").split(",")[0].trim();
 	res.once("finish", () => {
 		const event = {
 			event: "http_request",
@@ -197,20 +198,18 @@ const logAnalyticEvent = (req, res, next) => {
 			durationMs: Date.now() - startedAt,
 			domain: (req.get("x-forwarded-host") || req.get("host") || req.hostname || "").toLowerCase(),
 			referrer: req.get("referer") || req.get("referrer") || null,
-			userAgent,
 			browser: userAgentInfo.browser || "unknown",
 			os: userAgentInfo.os || "unknown",
 			isBot,
 			countryCode: req.get("cf-ipcountry") || null,
-			city: req.get("cf-ipcity") || null,
-			continent: req.get("cf-ipcontinent") || null,
-			ip: (req.get("cf-connecting-ip") || req.ip || "").split(",")[0].trim(),
+			ip,
 			rayId: req.get("cf-ray") || null,
 		};
 
 		postBetterStackEvent({ dt: event.timestamp, ...event });
 	});
 
+	req.userIp = ip;
 	next();
 };
 
