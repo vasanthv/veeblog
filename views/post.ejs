@@ -17,7 +17,7 @@
             <a href="javascript:void(0)" v-on:click="deletePost(<%- `'${post._id}'` %>)" class="red">delete post</a>
             <% } %>
           </div>
-          <button type="submit">Post</button>
+          <button type="submit"><%- typeof post !== "undefined" ? "update" : "post" %></button>
         </div>
       </form>
     </section>

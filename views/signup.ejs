@@ -18,7 +18,7 @@
         </div>
         <div class="field">
           <label for="password">Password</label>
-          <input type="password" id="password" placeholder="enter a password" v-model="newAccount.password" />
+          <input type="password" id="password" placeholder="enter a password" v-model="newAccount.password" @keyup.enter="signUp" />
         </div>
 
         <div class="small">By proceeding, you confirm your acceptance of our <a href="/terms" class="bold" target="_blank">terms</a>.</div>
