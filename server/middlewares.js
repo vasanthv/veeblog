@@ -202,7 +202,6 @@ const logAnalyticEvent = (req, res, next) => {
 			os: userAgentInfo.os || "unknown",
 			isBot,
 			countryCode: req.get("cf-ipcountry") || null,
-			ip,
 			rayId: req.get("cf-ray") || null,
 		};
 
