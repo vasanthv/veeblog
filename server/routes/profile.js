@@ -32,7 +32,6 @@ router.get("/", async (req, res, next) => {
 			tags: req.tags,
 			profile: profileUser,
 			url: config.URL,
-			csrfToken: req.csrfToken,
 			...pagination,
 		});
 	} catch (error) {
@@ -58,13 +57,26 @@ router.get("/post/:id", async (req, res, next) => {
 			}
 		}
 
-		res.render("single", {
-			profile: post.user,
-			post,
-			csrfToken: req.csrfToken,
-			title: getTitle(post.text),
-			postDate,
-		});
+		res.render("single", { profile: post.user, post, title: getTitle(post.text), postDate });
+	} catch (error) {
+		next(error);
+	}
+});
+
+router.get("/tags", async (req, res, next) => {
+	try {
+		const handle = getValidUsername(req.userDomain);
+		const profileUser = await getUserByUsername(handle);
+		if (!profileUser) return res.status(404).render("404");
+
+		const groupedTags = await Posts.aggregate([
+			{ $match: { user: profileUser._id } },
+			{ $unwind: "$hashtags" },
+			{ $group: { _id: "$hashtags", count: { $sum: 1 } } },
+			{ $sort: { _id: 1 } },
+		]);
+
+		res.render("tags", { profile: profileUser, groupedTags });
 	} catch (error) {
 		next(error);
 	}
