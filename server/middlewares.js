@@ -10,8 +10,7 @@ const utils = require("./utils");
 const { Users } = require("./model").getInstance();
 
 /**
- * This is an Express session middleware to enable session handling for the applicatio n
- * @return {null}
+ * Configures session storage in MongoDB and keeps sessions active with rolling cookies.
  */
 const sessionMiddleWare = session({
 	secret: config.SECRET,
@@ -23,11 +22,7 @@ const sessionMiddleWare = session({
 });
 
 /**
- * This is an Express js middleware to attach the request user to req.user path.
- * @param  {object}   req  - Express.js Request object. https://expressjs.com/en/5x/api.html#req
- * @param  {[type]}   res  - Express.js Response object. https://expressjs.com/en/5x/api.html#res
- * @param  {Function} next - Express.js next middleware function https://expressjs.com/en/guide/writing-middleware.html
- * @return {null}
+ * Loads the signed-in user from session token and attaches it to req.user.
  */
 const attachUsertoRequest = async (req, res, next) => {
 	if (req.session.token) {
@@ -39,9 +34,8 @@ const attachUsertoRequest = async (req, res, next) => {
 };
 
 /**
- * Resolves username subdomains and stores the matched username on req.userDomain.
- * For requests on the root domain, the middleware is a no-op.
- * For requests on username.domain, a matching username must exist or a 404 is raised.
+ * Resolves username from subdomain or custom domain and sets req.userDomain.
+ * Falls through on base domain; responds with 404 for unknown/invalid hostnames.
  */
 const attachUserDomainToRequest = async (req, res, next) => {
 	try {
@@ -86,13 +80,7 @@ const attachUserDomainToRequest = async (req, res, next) => {
 };
 
 /**
- * This is an Express js middleware to check if the request is authenticated or not.
- * Calls next when authenticated.
- * Responds a JSON error response if not authenticated.
- * @param  {object}   req  - Express.js Request object. https://expressjs.com/en/5x/api.html#req
- * @param  {[type]}   res  - Express.js Response object. https://expressjs.com/en/5x/api.html#res
- * @param  {Function} next - Express.js next middleware function https://expressjs.com/en/guide/writing-middleware.html
- * @return {null}
+ * Guards routes that require authentication and returns 401 when req.user is missing.
  */
 const isUserAuthed = (req, res, next) => {
 	if (req.user) return next();
@@ -100,11 +88,7 @@ const isUserAuthed = (req, res, next) => {
 };
 
 /**
- * This is an Express js middleware to add CSRF tokens to the request
- * @param  {object}   req  - Express.js Request object. https://expressjs.com/en/5x/api.html#req
- * @param  {[type]}   res  - Express.js Response object. https://expressjs.com/en/5x/api.html#res
- * @param  {Function} next - Express.js next middleware function https://expressjs.com/en/guide/writing-middleware.html
- * @return {null}
+ * Issues CSRF token cookies for safe methods and validates tokens for state-changing requests.
  */
 const csrfMiddleware = (req, res, next) => {
 	if (config.DISABLE_CSRF) return next();
@@ -138,11 +122,7 @@ const csrfMiddleware = (req, res, next) => {
 };
 
 /**
- * This is an Express js middleware to rate limit request. Uses `express-rate-limit` package
- * @param  {object}   req  - Express.js Request object. https://expressjs.com/en/5x/api.html#req
- * @param  {[type]}   res  - Express.js Response object. https://expressjs.com/en/5x/api.html#res
- * @param  {Function} next - Express.js next middleware function https://expressjs.com/en/guide/writing-middleware.html
- * @return {null}
+ * Builds a rate limiter with token-based keys for signed-in users and IP+UA fallback for guests.
  */
 const rateLimit = (options) => {
 	return rateLimiter({
@@ -165,6 +145,9 @@ const rateLimit = (options) => {
 	});
 };
 
+/**
+ * Sends a request analytics payload to Better Stack when logging is configured.
+ */
 const postBetterStackEvent = (payload) => {
 	const token = (config.BETTERSTACK_TOKEN || "").trim();
 	const host = (config.BETTERSTACK_HOST || "").trim();
@@ -181,6 +164,9 @@ const postBetterStackEvent = (payload) => {
 		.catch(() => {});
 };
 
+/**
+ * Captures request metadata, tags bot traffic, stores client IP, and logs on response finish.
+ */
 const logAnalyticEvent = (req, res, next) => {
 	const startedAt = Date.now();
 	const userAgent = req.get("user-agent") || "";

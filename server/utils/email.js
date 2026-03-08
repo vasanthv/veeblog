@@ -2,6 +2,13 @@ const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
 
 const config = require("../../config");
 
+/**
+ * Sends an email verification message with a verification link.
+ * @param {string} username - Username shown in the message.
+ * @param {string} email - Recipient email address.
+ * @param {string} code - Verification code used in the URL.
+ * @returns {void}
+ */
 const verificationEmail = (username, email, code) => {
 	const verificartionEmailLink = `${config.URL}api/verify/${code}`;
 
@@ -25,6 +32,13 @@ const verificationEmail = (username, email, code) => {
 	sendEmail(params);
 };
 
+/**
+ * Sends a password reset email containing a temporary password.
+ * @param {string} username - Username shown in the message.
+ * @param {string} email - Recipient email address.
+ * @param {string} password - Temporary password.
+ * @returns {void}
+ */
 const resetPasswordEmail = (username, email, password) => {
 	var params = {
 		Source: config.NO_REPLY_EMAIL,
@@ -48,9 +62,9 @@ const resetPasswordEmail = (username, email, password) => {
 
 /**
  * Sends a account deletion email to a user.
- * @param {string} username - The name of the recipient
+ * @param {string} name - The name of the recipient
  * @param {string} email - The email address of the recipient
- * @returns {Promise<void>}
+ * @returns {void}
  */
 const accountDeletionEmail = (name, email) => {
 	var params = {

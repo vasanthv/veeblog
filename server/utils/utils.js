@@ -104,7 +104,7 @@ const getValidString = (str, minLength, maxLength, fieldName = "Field") => {
  * Sanitizes and validates a post message.
  * @param {string} text - The post message to validate
  * @returns {string} The sanitized post message
- * @throws {Error} If text is empty or exceeds 640 characters
+ * @throws {Error} If text is empty or exceeds 10000 characters
  */
 const getValidPost = (text) => {
 	if (!text) httpError(400, "Empty post");
@@ -115,7 +115,7 @@ const getValidPost = (text) => {
 };
 
 /**
- * Creates a SHA-256 hash of a string with an optional secret.
+ * Creates a SHA-256 hash of a string using the app secret.
  * @param {string} str - The string to hash
  * @returns {string} The hashed string in hexadecimal format
  */
@@ -175,6 +175,11 @@ const markdownToHtml = (markdown = "") => {
 	return sanitizeString(htmlText);
 };
 
+/**
+ * Extracts a title from the first line of markdown text.
+ * @param {string} str - Raw markdown content.
+ * @returns {string} First-line title with heading/link syntax stripped.
+ */
 const getTitle = (str) => {
 	const firstLine = str
 		.split(/\r?\n/)[0]

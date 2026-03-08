@@ -4,6 +4,13 @@ const { marked } = require("marked");
 const renderer = new marked.Renderer();
 
 // Prevent nested links
+/**
+ * Renders markdown links with safe external-link attributes.
+ * @param {string|object} href - Link href or marked token.
+ * @param {string} [title] - Link title.
+ * @param {string} [text] - Link label text.
+ * @returns {string} HTML anchor markup or fallback text.
+ */
 renderer.link = function (href, title, text) {
 	const token = typeof href === "object" && href !== null ? href : null;
 	const resolvedHref = token ? token.href : href;
@@ -14,6 +21,11 @@ renderer.link = function (href, title, text) {
 	return `<a href="${resolvedHref}"${t} target="_blank" rel="noopener noreferrer">${resolvedText}</a>`;
 };
 
+/**
+ * Renders plain markdown text and auto-linkifies URLs and hashtags.
+ * @param {string|object} text - Text segment or marked token.
+ * @returns {string} HTML-safe text with generated anchor tags.
+ */
 renderer.text = function (text) {
 	const safeText = typeof text === "string" ? text : (text?.text ?? String(text ?? ""));
 	// 1️⃣ Linkify URLs
