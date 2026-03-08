@@ -1,28 +1,13 @@
-const dayjs = require("dayjs");
-const relativeTime = require("dayjs/plugin/relativeTime");
 const router = require("express").Router();
+const { attachDayjsToLocals, attachTagsFromQuery } = require("../middlewares");
 const { Users, Posts } = require("../model").getInstance();
 const { getPagedPosts, getUserBaseUrl } = require("../utils");
-
-dayjs.extend(relativeTime);
 
 const staticViews = ["/terms", "/privacy"];
 router.get(staticViews, (req, res) => res.render(req.path.substring(1), { user: req.user }));
 
-// attach day js to be used in ejs
-router.use((req, res, next) => {
-	res.locals.dayjs = dayjs;
-	next();
-});
-
-// Attach tags from the query params
-router.use((req, res, next) => {
-	const rawTags = req.query.tag;
-	if (rawTags) {
-		req.tags = (Array.isArray(rawTags) ? rawTags : [rawTags]).map((tag) => tag.trim().toLowerCase()).filter(Boolean);
-	}
-	next();
-});
+router.use(attachDayjsToLocals);
+router.use(attachTagsFromQuery);
 
 router.get("/", async (req, res, next) => {
 	try {

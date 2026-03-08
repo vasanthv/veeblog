@@ -3,11 +3,15 @@ const mongoStore = require("connect-mongo");
 const session = require("express-session");
 const axios = require("axios");
 const { isbot } = require("isbot");
+const dayjs = require("dayjs");
+const relativeTime = require("dayjs/plugin/relativeTime");
 const uuid = require("uuid").v4;
 
 const config = require("../config");
 const utils = require("./utils");
 const { Users } = require("./model").getInstance();
+
+dayjs.extend(relativeTime);
 
 /**
  * Configures session storage in MongoDB and keeps sessions active with rolling cookies.
@@ -198,6 +202,25 @@ const logAnalyticEvent = (req, res, next) => {
 	next();
 };
 
+/**
+ * Attaches shared dayjs instance to res.locals for EJS templates.
+ */
+const attachDayjsToLocals = (req, res, next) => {
+	res.locals.dayjs = dayjs;
+	next();
+};
+
+/**
+ * Parses `tag` query params and stores normalized tags on req.tags.
+ */
+const attachTagsFromQuery = (req, res, next) => {
+	const rawTags = req.query.tag;
+	if (rawTags) {
+		req.tags = (Array.isArray(rawTags) ? rawTags : [rawTags]).map((tag) => tag.trim().toLowerCase()).filter(Boolean);
+	}
+	next();
+};
+
 module.exports = {
 	sessionMiddleWare,
 	attachUsertoRequest,
@@ -206,4 +229,6 @@ module.exports = {
 	csrfMiddleware,
 	rateLimit,
 	logAnalyticEvent,
+	attachDayjsToLocals,
+	attachTagsFromQuery,
 };

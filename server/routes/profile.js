@@ -1,10 +1,9 @@
 const geoip = require("geoip-lite");
-const dayjs = require("dayjs");
-const relativeTime = require("dayjs/plugin/relativeTime");
 const Feed = require("feed").Feed;
 const router = require("express").Router();
 
 const { Posts } = require("../model").getInstance();
+const { attachDayjsToLocals, attachTagsFromQuery } = require("../middlewares");
 const {
 	getPagedPosts,
 	getUserBaseUrl,
@@ -15,25 +14,8 @@ const {
 } = require("../utils");
 const config = require("../../config");
 
-dayjs.extend(relativeTime);
-
-const staticViews = ["/terms", "/privacy", "/pricing"];
-router.get(staticViews, (req, res) => res.render(req.path.substring(1), { user: req.user }));
-
-// attach day js to be used in ejs
-router.use((req, res, next) => {
-	res.locals.dayjs = dayjs;
-	next();
-});
-
-// Attach tags from the query params
-router.use((req, res, next) => {
-	const rawTags = req.query.tag;
-	if (rawTags) {
-		req.tags = (Array.isArray(rawTags) ? rawTags : [rawTags]).map((tag) => tag.trim().toLowerCase()).filter(Boolean);
-	}
-	next();
-});
+router.use(attachDayjsToLocals);
+router.use(attachTagsFromQuery);
 
 router.get("/", async (req, res, next) => {
 	try {
