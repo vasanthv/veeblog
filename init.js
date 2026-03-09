@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, "assets/icons")));
 
 // HTTP access logs
 app.use(useragent.express());
-app.use(mw.logAnalyticEvent);
+app.use(mw.accessLog);
 
 app.use(mw.attachUserDomainToRequest);
 app.use((req, res, next) => {

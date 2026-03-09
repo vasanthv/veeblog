@@ -162,7 +162,7 @@ const setUserTimezone = (req, res, next) => {
 /**
  * Captures request metadata, tags bot traffic, stores client IP, and logs on response finish.
  */
-const logAnalyticEvent = (req, res, next) => {
+const accessLog = (req, res, next) => {
 	const startedAt = Date.now();
 	const userAgent = req.get("user-agent") || "";
 	const userAgentInfo = req.useragent || {};
@@ -217,7 +217,7 @@ module.exports = {
 	csrfMiddleware,
 	rateLimit,
 	setUserTimezone,
-	logAnalyticEvent,
+	accessLog,
 	attachDayjsToLocals,
 	attachTagsFromQuery,
 };
