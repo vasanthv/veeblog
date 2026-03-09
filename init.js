@@ -1,7 +1,5 @@
 const express = require("express");
-const fs = require("fs");
 const path = require("path");
-const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const useragent = require("express-useragent");
 
@@ -11,13 +9,7 @@ const config = require("./config");
 const apiRoutes = require("./server/routes/api");
 const viewRoutes = require("./server/routes/view");
 const profileRoutes = require("./server/routes/profile");
-const {
-	sessionMiddleWare,
-	csrfMiddleware,
-	attachUsertoRequest,
-	attachUserDomainToRequest,
-	logAnalyticEvent,
-} = require("./server/middlewares");
+const mw = require("./server/middlewares");
 
 const app = express();
 
@@ -34,9 +26,9 @@ app.use(express.static(path.join(__dirname, "assets/icons")));
 
 // HTTP access logs
 app.use(useragent.express());
-app.use(logAnalyticEvent);
+app.use(mw.logAnalyticEvent);
 
-app.use(attachUserDomainToRequest);
+app.use(mw.attachUserDomainToRequest);
 app.use((req, res, next) => {
 	if (req.userDomain) return profileRoutes(req, res, next);
 	return next();
@@ -46,11 +38,11 @@ app.use((req, res, next) => {
 app.use(cookieParser());
 
 // Attach the session middleware
-app.use(sessionMiddleWare);
-app.use(attachUsertoRequest);
+app.use(mw.sessionMiddleWare);
+app.use(mw.attachUsertoRequest);
 
 // Custom CSRF middleware
-app.use(csrfMiddleware);
+app.use(mw.csrfMiddleware);
 
 // Handle API requests
 app.use("/api", apiRoutes);
