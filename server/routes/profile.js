@@ -50,7 +50,7 @@ router.get("/post/:id", setUserTimezone, async (req, res, next) => {
 		let postDate = post.createdOn.toString();
 
 		if (req.timezone) {
-			postDate = formatPostDate(post.createdOn, geo.timezone);
+			postDate = formatPostDate(post.createdOn, req.timezone);
 		}
 
 		res.render("single", { profile: post.user, post, title: getTitle(post.text), postDate });
