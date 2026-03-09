@@ -61,5 +61,6 @@ app.use("/", viewRoutes);
 // Start the server
 app.listen(config.PORT, null, function () {
 	console.log("Node version", process.version);
+	console.log("Test log", { hello: "world", useragnet: "afadsf asdf" });
 	console.log("Veeblog server running on port", config.PORT);
 });
