@@ -35,7 +35,6 @@ router.use(["/:404", "/"], (req, res) => {
 
 // Handle the known errors
 router.use((err, req, res, next) => {
-	console.error(err, "Caught error");
 	if (err.httpErrorCode) {
 		res.status(err.httpErrorCode).json({ message: err.message || "Something went wrong" });
 	} else {
@@ -46,7 +45,7 @@ router.use((err, req, res, next) => {
 // Handle the unknown errors
 // eslint-disable-next-line
 router.use((err, req, res, next) => {
-	console.error(err, "Uncaught error");
+	console.error(err);
 	res.status(500).json({ message: "Something went wrong", error: err.message });
 });
 

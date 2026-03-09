@@ -1,11 +1,10 @@
 const rateLimiter = require("express-rate-limit");
 const mongoStore = require("connect-mongo");
 const session = require("express-session");
-const axios = require("axios");
+const geoip = require("geoip-lite");
 const { isbot } = require("isbot");
 const dayjs = require("dayjs");
 const relativeTime = require("dayjs/plugin/relativeTime");
-const uuid = require("uuid").v4;
 
 const config = require("../config");
 const utils = require("./utils");
@@ -149,23 +148,15 @@ const rateLimit = (options) => {
 	});
 };
 
-/**
- * Sends a request analytics payload to Better Stack when logging is configured.
- */
-const postBetterStackEvent = (payload) => {
-	const token = (config.BETTERSTACK_TOKEN || "").trim();
-	const host = (config.BETTERSTACK_HOST || "").trim();
-	if (!host || !token) return;
-
-	void axios
-		.post(`https://${host}`, payload, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-				"Content-Type": "application/json",
-			},
-			timeout: 1500,
-		})
-		.catch(() => {});
+const setUserTimezone = (req, res, next) => {
+	const ip = (req.get("cf-connecting-ip") || req.ip || "").split(",")[0].trim();
+	if (ip) {
+		const geo = geoip.lookup(ip);
+		if (geo?.timezone) {
+			req.timezone = geo.timezone;
+		}
+	}
+	next();
 };
 
 /**
@@ -176,8 +167,7 @@ const logAnalyticEvent = (req, res, next) => {
 	const userAgent = req.get("user-agent") || "";
 	const userAgentInfo = req.useragent || {};
 	const cfClientBot = (req.get("cf-client-bot") || "").toLowerCase();
-	const isBot = cfClientBot === "true" || userAgentInfo.isBot || isbot(userAgent);
-	const ip = (req.get("cf-connecting-ip") || req.ip || "").split(",")[0].trim();
+	const isBot = cfClientBot === "true" || isbot(userAgent);
 	res.once("finish", () => {
 		const event = {
 			event: "http_request",
@@ -187,18 +177,16 @@ const logAnalyticEvent = (req, res, next) => {
 			statusCode: res.statusCode,
 			durationMs: Date.now() - startedAt,
 			domain: (req.get("x-forwarded-host") || req.get("host") || req.hostname || "").toLowerCase(),
-			referrer: req.get("referer") || req.get("referrer") || null,
-			browser: userAgentInfo.browser || "unknown",
-			os: userAgentInfo.os || "unknown",
+			referrer: req.get("referer") || req.get("referrer"),
+			browser: userAgentInfo.browser,
+			os: userAgentInfo.os,
 			isBot,
-			countryCode: req.get("cf-ipcountry") || null,
-			rayId: req.get("cf-ray") || null,
+			countryCode: req.get("cf-ipcountry"),
 		};
 
-		postBetterStackEvent({ dt: event.timestamp, ...event });
+		console.log(JSON.stringify(event));
 	});
 
-	req.userIp = ip;
 	next();
 };
 
@@ -228,6 +216,7 @@ module.exports = {
 	isUserAuthed,
 	csrfMiddleware,
 	rateLimit,
+	setUserTimezone,
 	logAnalyticEvent,
 	attachDayjsToLocals,
 	attachTagsFromQuery,

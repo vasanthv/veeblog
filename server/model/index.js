@@ -18,7 +18,8 @@ module.exports = (() => {
 
 	const createInstance = () => {
 		db.on("error", (error) => {
-			console.error("Error in MongoDb connection: " + error);
+			console.error("Error in MongoDb connection: ");
+			console.error(error);
 			mongoose.disconnect(); // Trigger disconnect on any error
 		});
 		db.on("connected", () => console.log("Veeblog DB connected"));

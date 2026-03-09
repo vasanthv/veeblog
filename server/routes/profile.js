@@ -1,9 +1,8 @@
-const geoip = require("geoip-lite");
 const Feed = require("feed").Feed;
 const router = require("express").Router();
 
 const { Posts } = require("../model").getInstance();
-const { attachDayjsToLocals, attachTagsFromQuery } = require("../middlewares");
+const { attachDayjsToLocals, attachTagsFromQuery, setUserTimezone } = require("../middlewares");
 const {
 	getPagedPosts,
 	getUserBaseUrl,
@@ -39,7 +38,7 @@ router.get("/", async (req, res, next) => {
 	}
 });
 
-router.get("/post/:id", async (req, res, next) => {
+router.get("/post/:id", setUserTimezone, async (req, res, next) => {
 	try {
 		const handle = getValidUsername(req.userDomain);
 		const query = { _id: req.params.id };
@@ -50,11 +49,8 @@ router.get("/post/:id", async (req, res, next) => {
 
 		let postDate = post.createdOn.toString();
 
-		if (req.userIp) {
-			const geo = geoip.lookup(req.userIp);
-			if (geo?.timezone) {
-				postDate = formatPostDate(post.createdOn, geo.timezone);
-			}
+		if (req.timezone) {
+			postDate = formatPostDate(post.createdOn, geo.timezone);
 		}
 
 		res.render("single", { profile: post.user, post, title: getTitle(post.text), postDate });
@@ -131,7 +127,6 @@ router.get("/*", async (req, res, next) => res.status(404).render("404"));
 
 // Handle the known errors
 router.use((err, req, res, next) => {
-	console.error(err, "Caught error");
 	if (err.httpErrorCode) {
 		res.status(err.httpErrorCode).send(err.message || "Something went wrong");
 	} else {
@@ -142,7 +137,7 @@ router.use((err, req, res, next) => {
 // Handle the unknown errors
 // eslint-disable-next-line
 router.use((err, req, res, next) => {
-	console.error(err, "Uncaught error");
+	console.error(err);
 	res.status(500).send("Something went wrong");
 });
 
