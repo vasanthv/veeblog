@@ -99,7 +99,11 @@ async function parseFeed(xmlData, feedUrl) {
 			const safeItem = item && typeof item === "object" ? item : {};
 			const link = typeof safeItem.link === "string" && safeItem.link.trim() ? safeItem.link : "javascript:void(0)";
 			const fallbackTitle =
-				safeItem["content:encodedSnippet"] ?? safeItem.contentSnippet ?? safeItem.link ?? "Untitled item";
+				safeItem.description ??
+				safeItem["content:encodedSnippet"] ??
+				safeItem.contentSnippet ??
+				safeItem.link ??
+				"Untitled item";
 
 			return {
 				guid: typeof safeItem.guid === "string" ? safeItem.guid : (safeItem.id ?? safeItem.link ?? link),
