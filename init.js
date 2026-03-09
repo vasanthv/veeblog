@@ -33,7 +33,6 @@ app.use(express.static(path.join(__dirname, "assets")));
 app.use(express.static(path.join(__dirname, "assets/icons")));
 
 // HTTP access logs
-app.use(morgan("dev")); // for dev logging
 app.use(useragent.express());
 app.use(logAnalyticEvent);
 
