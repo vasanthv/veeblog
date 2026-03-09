@@ -33,13 +33,13 @@ Add:
 ```text
 127.0.0.1 veeblog.local
 127.0.0.1 www.veeblog.local
-127.0.0.1 alice.veeblog.local
+127.0.0.1 vasanth.veeblog.local
 ```
 
 Notes:
 
 - `veeblog.local` matches the local `DOMAIN` in `config.js`.
-- You can replace `alice` with any username subdomain you want to test.
+- You can replace `vasanth` with any username subdomain you want to test.
 - On Windows, edit `C:\Windows\System32\drivers\etc\hosts` with the same entries.
 
 4. Export environment variables (or run through your preferred env loader) and start:
@@ -56,3 +56,11 @@ You can also access it via `http://veeblog.local:3000`.
 - `npm start`: start server
 - `npm run api-dev`: start with CSRF disabled (local API testing only)
 - `npm test`: lint project
+
+### Contributions
+
+Please refer <a href="https://github.com/vasanthv/veeblog/blob/main/CONTRIBUTIONS.md">CONTRIBUTIONS.md</a> for more info.
+
+### LICENSE
+
+<a href="https://github.com/vasanthv/veeblog/blob/main/LICENSE">MIT License</a>
