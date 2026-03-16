@@ -107,7 +107,7 @@ async function parseFeed(xmlData, feedUrl) {
 
 			return {
 				guid: typeof safeItem.guid === "string" ? safeItem.guid : (safeItem.id ?? safeItem.link ?? link),
-				title: formatTitle(safeItem.title ?? fallbackTitle),
+				title: formatTitle(safeItem.title || fallbackTitle),
 				link,
 				channel: { title: feed.title ?? "Unknown", link: feed.link, image: feed.image?.url },
 				publishedOn: normalizeDate(safeItem.pubDate ?? safeItem.isoDate) ?? isoDateTwentyYearsFromNow(),
