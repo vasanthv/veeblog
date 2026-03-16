@@ -5,11 +5,14 @@
 <body>
   <div id="app" class="wrap" v-cloak>
     <%- include('partials/header', {title: "Feed"}); -%>
+
+    <section class="flex">
+      <a href="/feed/config">configure your feed</a>
+    </section>
+
     <% if(user.feedFollows.length <= 0) { %>
     <div class="empty">
       No items to show.
-      <div class="spacer"></div>
-      <a href="/feed/config">configure your feed</a>
     </div>
     <% } else { %>
     <section>
