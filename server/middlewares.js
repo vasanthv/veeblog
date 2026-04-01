@@ -2,7 +2,6 @@ const rateLimiter = require("express-rate-limit");
 const mongoStore = require("connect-mongo");
 const session = require("express-session");
 const geoip = require("geoip-lite");
-const { isbot } = require("isbot");
 const dayjs = require("dayjs");
 const relativeTime = require("dayjs/plugin/relativeTime");
 
@@ -160,37 +159,6 @@ const setUserTimezone = (req, res, next) => {
 };
 
 /**
- * Captures request metadata, tags bot traffic, stores client IP, and logs on response finish.
- */
-const accessLog = (req, res, next) => {
-	const startedAt = Date.now();
-	const userAgent = req.get("user-agent") || "";
-	const userAgentInfo = req.useragent || {};
-	const cfClientBot = (req.get("cf-client-bot") || "").toLowerCase();
-	const isBot = cfClientBot === "true" || isbot(userAgent);
-	res.once("finish", () => {
-		const event = {
-			event: "http_request",
-			timestamp: new Date().toISOString(),
-			method: req.method,
-			path: req.originalUrl,
-			statusCode: res.statusCode,
-			durationMs: Date.now() - startedAt,
-			domain: (req.get("x-forwarded-host") || req.get("host") || req.hostname || "").toLowerCase(),
-			referrer: req.get("referer") || req.get("referrer"),
-			browser: userAgentInfo.browser,
-			os: userAgentInfo.os,
-			isBot,
-			countryCode: req.get("cf-ipcountry"),
-		};
-
-		console.log(JSON.stringify(event));
-	});
-
-	next();
-};
-
-/**
  * Attaches shared dayjs instance to res.locals for EJS templates.
  */
 const attachDayjsToLocals = (req, res, next) => {
@@ -217,7 +185,6 @@ module.exports = {
 	csrfMiddleware,
 	rateLimit,
 	setUserTimezone,
-	accessLog,
 	attachDayjsToLocals,
 	attachTagsFromQuery,
 };
