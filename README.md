@@ -1,6 +1,6 @@
 # Veeblog
 
-A calm & minimal microblogging platform with Markdown support.
+A calm & minimal microblogging website with Markdown support.
 
 ## Tech stack
 
