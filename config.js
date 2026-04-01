@@ -16,7 +16,21 @@ module.exports = {
 	AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY_ID,
 	AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
 	NO_REPLY_EMAIL: process.env.NO_REPLY_EMAIL ?? "Veeblog <noreply@email.veeblog.com>",
-	INVALID_HANDLES: ["administrator", "admin", "bot", "veeblog", "hello", "hey", "hi", "demo", "test", "status"],
+	INVALID_HANDLES: [
+		"administrator",
+		"admin",
+		"bot",
+		"veeblog",
+		"hello",
+		"hey",
+		"hi",
+		"demo",
+		"test",
+		"status",
+		"analytics",
+	],
 	TITLE_MAX_LENGTH: 320,
 	FEED_ITEMS_CACHE_TTL_MS: 60 * 60,
+	// Analytics should be enabled only for the production env
+	ANALYTICS_URL: IS_PROD ? process.env.ANALYTICS_URL : null,
 };

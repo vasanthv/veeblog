@@ -1,7 +1,7 @@
 const express = require("express");
+const morgan = require("morgan");
 const path = require("path");
 const cookieParser = require("cookie-parser");
-const useragent = require("express-useragent");
 
 const pkg = require("./package.json");
 
@@ -15,6 +15,7 @@ const app = express();
 
 app.set("view engine", "ejs");
 app.locals.appVersion = pkg.version;
+app.locals.analytics = config.ANALYTICS_URL;
 
 // Serve vue.js, page.js & axios to the browser
 app.use(express.static(path.join(__dirname, "node_modules/axios/dist/")));
@@ -24,15 +25,13 @@ app.use(express.static(path.join(__dirname, "node_modules/vue/dist/")));
 app.use(express.static(path.join(__dirname, "assets")));
 app.use(express.static(path.join(__dirname, "assets/icons")));
 
-// HTTP access logs
-app.use(useragent.express());
-app.use(mw.accessLog);
-
 app.use(mw.attachUserDomainToRequest);
 app.use((req, res, next) => {
 	if (req.userDomain) return profileRoutes(req, res, next);
 	return next();
 });
+
+app.use(morgan("dev")); // for dev logging
 
 // Attach cookie middleware
 app.use(cookieParser());
