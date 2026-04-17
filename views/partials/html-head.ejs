@@ -23,8 +23,8 @@
   <link rel="alternate" type="application/rss+xml" title="<%=profile.name ?? profile.username %>" href="/feed/rss" />
   <link rel="alternate" type="application/json" title="<%=profile.name ?? profile.username %>" href="/feed/json" />
 
-  <% if(typeof profile.customCssUrl !=="undefined" ) { %>
-  <link href="<%= profile.customCssUrl %>" rel="stylesheet" />
+  <% if(typeof customStyleTag !== "undefined" ) { %>
+  <%-customStyleTag%>
   <% } %>
 
   <title><%= title ?? "" %></title>

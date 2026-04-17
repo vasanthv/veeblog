@@ -1,6 +1,6 @@
 {
 	"name": "veeblog",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"description": "A minimal microblogging website with Markdown support. No ads, no likes, no follows - just a clean space to write and share your thoughts.",
 	"keywords": [
 		"microblogging",

@@ -24,11 +24,12 @@ const userSchema = new Schema({
 	footer: String,
 	footerHTML: String,
 	domain: String,
-	customCssUrl: String,
+	customStyle: String,
 	customScriptUrl: String,
 	feedFollows: [{ type: String }],
 	devices: [{ token: { type: String, index: true }, userAgent: String }],
 	deletionDate: { type: Date, expires: 0 },
+	links: [{ link: String, name: String }],
 });
 
 const postSchema = new Schema({

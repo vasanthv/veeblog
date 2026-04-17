@@ -10,6 +10,7 @@ const {
 	getValidUsername,
 	getTitle,
 	formatPostDate,
+	getCustomStyleTag,
 } = require("../utils");
 const config = require("../../config");
 
@@ -26,11 +27,14 @@ router.get("/", async (req, res, next) => {
 		if (req.tags?.length > 0) query.hashtags = { $all: req.tags };
 
 		const pagination = await getPagedPosts(req, query);
+		const customStyleTag = getCustomStyleTag(profileUser.customStyle);
+
 		res.render("profile", {
 			user: req.user,
 			tags: req.tags,
 			profile: profileUser,
 			url: config.URL,
+			customStyleTag,
 			...pagination,
 		});
 	} catch (error) {
@@ -52,8 +56,9 @@ router.get("/post/:id", setUserTimezone, async (req, res, next) => {
 		if (req.timezone) {
 			postDate = formatPostDate(post.createdOn, req.timezone);
 		}
+		const customStyleTag = getCustomStyleTag(post.user.customStyle);
 
-		res.render("single", { profile: post.user, post, title: getTitle(post.text), postDate });
+		res.render("single", { profile: post.user, post, title: getTitle(post.text), postDate, customStyleTag });
 	} catch (error) {
 		next(error);
 	}
@@ -72,7 +77,9 @@ router.get("/tags", async (req, res, next) => {
 			{ $sort: { _id: 1 } },
 		]);
 
-		res.render("tags", { profile: profileUser, groupedTags });
+		const customStyleTag = getCustomStyleTag(profileUser.customStyle);
+
+		res.render("tags", { profile: profileUser, groupedTags, customStyleTag });
 	} catch (error) {
 		next(error);
 	}

@@ -155,17 +155,18 @@ const updateAccount = async (req, res, next) => {
 			updateFields["bioHTML"] = "";
 		}
 
+		const customStyle = req.body.customStyle
+			? await utils.getValidString(req.body.customStyle, 1, 5000, "Custom Style ")
+			: null;
+		updateFields["customStyle"] = customStyle;
+
 		if (req.user.usertype !== "free") {
 			const domain = req.body.domain ? await utils.getValidString(req.body.domain, 1, 100, "Domain") : null;
-			const customCssUrl = req.body.customCssUrl
-				? await utils.getValidString(req.body.customCssUrl, 1, 500, "Custom CSS URL ")
-				: null;
 			const customScriptUrl = req.body.customScriptUrl
 				? await utils.getValidString(req.body.customScriptUrl, 1, 500, "Custom Script URL ")
 				: null;
 
 			updateFields["domain"] = domain;
-			updateFields["customCssUrl"] = customCssUrl;
 			updateFields["customScriptUrl"] = customScriptUrl;
 		}
 
