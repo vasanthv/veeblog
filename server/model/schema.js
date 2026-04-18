@@ -21,15 +21,17 @@ const userSchema = new Schema({
 	iconUrl: String,
 	bio: String,
 	bioHTML: String,
-	footer: String,
-	footerHTML: String,
+	nav: { type: String, default: "[Home](/) &middot; [Follow via RSS](/feed/rss)" },
+	navHTML: {
+		type: String,
+		default: '<a href="/">Home</a> · <a href="/feed/rss">Follow via RSS</a>',
+	},
 	domain: String,
 	customStyle: String,
 	customScriptUrl: String,
 	feedFollows: [{ type: String }],
 	devices: [{ token: { type: String, index: true }, userAgent: String }],
 	deletionDate: { type: Date, expires: 0 },
-	links: [{ link: String, name: String }],
 });
 
 const postSchema = new Schema({

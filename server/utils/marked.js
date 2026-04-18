@@ -18,7 +18,7 @@ renderer.link = function (href, title, text) {
 	const resolvedText = token ? token.text : text;
 	if (!resolvedHref) return resolvedText ?? "";
 	const t = resolvedTitle ? ` title="${resolvedTitle}"` : "";
-	return `<a href="${resolvedHref}"${t} target="_blank" rel="noopener noreferrer">${resolvedText}</a>`;
+	return `<a href="${resolvedHref}"${t}>${resolvedText}</a>`;
 };
 
 /**

@@ -132,6 +132,7 @@ const updateAccount = async (req, res, next) => {
 
 		const name = req.body.name ? await utils.getValidString(req.body.name, 1, 50, "Name") : null;
 		const bio = req.body.bio ? await utils.getValidString(req.body.bio, 1, 640, "Bio") : null;
+		const nav = req.body.nav ? await utils.getValidString(req.body.nav, 1, 640, "Top nav") : null;
 
 		const iconUrl = req.body.iconUrl ? await utils.getValidString(req.body.iconUrl, 1, 500, "Favicon URL") : null;
 
@@ -157,6 +158,14 @@ const updateAccount = async (req, res, next) => {
 		} else {
 			updateFields["bio"] = "";
 			updateFields["bioHTML"] = "";
+		}
+
+		if (nav) {
+			updateFields["nav"] = nav;
+			updateFields["navHTML"] = utils.markdownToHtml(nav);
+		} else {
+			updateFields["nav"] = "";
+			updateFields["navHTML"] = "";
 		}
 
 		updateFields["customStyle"] = customStyle;

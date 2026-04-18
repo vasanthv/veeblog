@@ -42,6 +42,10 @@
           <input type="password" id="password" placeholder="new password" v-model="myAccount.password" />
         </div>
         <div class="field">
+          <label for="topnav">Top navigation (markdown)</label>
+          <textarea id="topnav" placeholder="eg: [Home](/) &middot; [Follow via RSS](/feed/rss)" v-model="myAccount.nav" rows="2"></textarea>
+        </div>
+        <div class="field">
           <label for="style">Custom style</label>
           <textarea id="style" placeholder="eg: body{background:red;}" v-model="myAccount.customStyle" rows="2" style="font-family: monospace;"></textarea>
         </div>
@@ -114,6 +118,7 @@
         password: "",
         iconUrl: "<%=user.iconUrl%>",
         domain: "<%=user.domain%>",
+        nav: "<%- JSON.stringify(user.nav || '').slice(1, -1) %>",
         customStyle: "<%- JSON.stringify(user.customStyle || '').slice(1, -1) %>",
         customScriptUrl: "<%=user.customScriptUrl%>",
       };
