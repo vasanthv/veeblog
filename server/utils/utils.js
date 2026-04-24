@@ -230,6 +230,16 @@ const formatPostDate = (dateValue, timezone) => {
 };
 
 /**
+ * Wraps custom CSS in a style tag for HTML injection.
+ * @param {string} customStyle - Raw CSS string from user settings
+ * @returns {string|undefined} Style tag string when customStyle is provided, otherwise undefined
+ */
+const getCustomStyleTag = (customStyle) => {
+	if (!customStyle) return undefined;
+	return `<style>${customStyle}</style>`;
+};
+
+/**
  * Creates an error object with HTTP status code and message.
  * @param {number} code - HTTP error code
  * @param {string} message - HTTP error message
@@ -260,5 +270,6 @@ module.exports = {
 	getTitle,
 	getUserBaseUrl,
 	formatPostDate,
+	getCustomStyleTag,
 	httpError,
 };

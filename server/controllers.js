@@ -132,8 +132,13 @@ const updateAccount = async (req, res, next) => {
 
 		const name = req.body.name ? await utils.getValidString(req.body.name, 1, 50, "Name") : null;
 		const bio = req.body.bio ? await utils.getValidString(req.body.bio, 1, 640, "Bio") : null;
+		const nav = req.body.nav ? await utils.getValidString(req.body.nav, 1, 640, "Top nav") : null;
 
-		const iconUrl = req.body.iconUrl ? await utils.getValidString(req.body.iconUrl, 1, 500, "Icon URL ") : null;
+		const iconUrl = req.body.iconUrl ? await utils.getValidString(req.body.iconUrl, 1, 500, "Favicon URL") : null;
+
+		const customStyle = req.body.customStyle
+			? await utils.getValidString(req.body.customStyle, 1, 5000, "Custom Style")
+			: null;
 
 		const updateFields = {};
 		if (email && email !== req.user.email) {
@@ -155,17 +160,23 @@ const updateAccount = async (req, res, next) => {
 			updateFields["bioHTML"] = "";
 		}
 
+		if (nav) {
+			updateFields["nav"] = nav;
+			updateFields["navHTML"] = utils.markdownToHtml(nav);
+		} else {
+			updateFields["nav"] = "";
+			updateFields["navHTML"] = "";
+		}
+
+		updateFields["customStyle"] = customStyle;
+
 		if (req.user.usertype !== "free") {
 			const domain = req.body.domain ? await utils.getValidString(req.body.domain, 1, 100, "Domain") : null;
-			const customCssUrl = req.body.customCssUrl
-				? await utils.getValidString(req.body.customCssUrl, 1, 500, "Custom CSS URL ")
-				: null;
 			const customScriptUrl = req.body.customScriptUrl
-				? await utils.getValidString(req.body.customScriptUrl, 1, 500, "Custom Script URL ")
+				? await utils.getValidString(req.body.customScriptUrl, 1, 500, "Custom Script URL")
 				: null;
 
 			updateFields["domain"] = domain;
-			updateFields["customCssUrl"] = customCssUrl;
 			updateFields["customScriptUrl"] = customScriptUrl;
 		}
 

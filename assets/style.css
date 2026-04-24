@@ -13,7 +13,7 @@ body {
 	background: var(--background);
 	color: var(--text);
 	margin: 0;
-	font-family: Arial, system-ui, sans-serif;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 	line-height: 1.65;
 	text-rendering: optimizeLegibility;
 }
